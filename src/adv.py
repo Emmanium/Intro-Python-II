@@ -39,7 +39,40 @@ room['treasure'].s_to = room['narrow']
 
 
 def main():
-    pass
+    # Establish re-usable variables
+    n = 'n'
+    s = 's'
+    e = 'e'
+    w = 'w'
+    q = 'q'
+    flag = True
+    start_room = room['outside']
+    curr_room = start_room
+    while flag:
+        user_input = input(
+            'Type a direction:\nn, s, e, w\nor press q quit\n')
+
+        if user_input == n and curr_room.n_to is not None:
+            curr_room = curr_room.n_to
+            print(curr_room)
+
+        elif user_input == s and curr_room.s_to is not None:
+            curr_room = curr_room.s_to
+            print(curr_room)
+
+        elif user_input == e and curr_room.e_to is not None:
+            curr_room = curr_room.e_to
+            print(curr_room)
+
+        elif user_input == w and curr_room.w_to is not None:
+            curr_room = curr_room.w_to
+            print(curr_room)
+
+        elif user_input == q:
+            quit()
+
+        else:
+            print("Move in a valid direction")
 
 
 if __name__ == "__main__":

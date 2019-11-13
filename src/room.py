@@ -3,7 +3,7 @@
 
 
 class Room:
-    def __init__(self, name, description, n_to, s_to, e_to, w_to):
+    def __init__(self, name, description, n_to=None, s_to=None, e_to=None, w_to=None):
         self.name = name
         self.description = description
         self.n_to = n_to
@@ -11,5 +11,5 @@ class Room:
         self.e_to = e_to
         self.w_to = w_to
 
-    def __str__(self):
-        return (f"This is room {self.name}")
+    def __repr__(self):
+        return f"{self.name} {self.description}"
