@@ -37,6 +37,13 @@ room['treasure'].s_to = room['narrow']
 # Main
 #
 
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()
 # Make a new player object that is currently in the 'outside' room.
 
 # Write a loop that:
