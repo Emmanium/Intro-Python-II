@@ -1,5 +1,6 @@
 from room import Room
 from item import Item
+from player import Player
 # Declare all the rooms
 
 room = {
@@ -34,27 +35,23 @@ room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
 # Declare items
-items = {
-    'rock':    Item("Rock", "Potentially deadly"),
-
-    'pebble':    Item("Pebble", "Potentially sweet"),
-
-    'sword':    Item("Sword", "Poke it with the pointy end"),
-
-    'shield':    Item(
-        "Shield", "A good dinner plate")
-}
-
+# Creates a variable with the same name as an item and makes sure the name is stored in all lowercase
+rock = Item("Rock", "Potentially deadly").name.lower()
+pebble = Item("Pebble", "Potentially sweet").name.lower()
+sword = Item("Sword", "Poke it with the pointy end").name.lower()
+shield = Item(
+    "Shield", "A good dinner plate").name.lower()
 # For convenience sakes
-# creates a variable with the same name as an item and makes sure the name is all lowercase
-rock = items['rock'].name.lower()
-pebble = items['pebble'].name.lower()
-sword = items['sword'].name.lower()
-shield = items['shield'].name.lower()
-
+# And now lists are created to add to each room
+# This is because appending one by one sucks
+outside_items = [rock, pebble]
+foyer_items = [sword, shield]
+overlook_items = []
+narrow_items = []
+treasure_items = []
 # Add items to Rooms
-room['outside'].items = [rock, pebble]
-room['foyer'].items = [sword, shield]
+room['outside'].items.extend(outside_items)
+room['foyer'].items.extend(foyer_items)
 
 #
 # Main
@@ -64,12 +61,14 @@ room['foyer'].items = [sword, shield]
 def main():
     # Establish re-usable variables
     valid_inputs = ['n', 's', 'e', 'w', 'q']
-    flag = True
     start_room = room['outside']
     curr_room = start_room
-    while flag:
+    name = input("Enter your name:\n")
+    p = Player(name, curr_room)
+
+    while True:
         user_input = input(
-            'Type a direction:\nn, s, e, w\nOr try taking an item using the following format:\ntake item_name_here\nPress q quit\n')
+            'Type a direction:\nn, s, e, w\nOr try taking an item using the following format:\ntake item_name_here\nPress q to quit\n')
         # split and create copy of the user_input after making it all lowercase
         ui_copy = user_input.lower().split()
         # # If length is greater than two, print help message
@@ -77,10 +76,15 @@ def main():
             print("Please only enter one or two words")
         # If the length is 2 and the first string in the dictionary is "take", loop through the items in the room
         elif len(ui_copy) == 2 and ui_copy[0] == "take":
-            if ui_copy[1] in curr_room.items:
-                print("you got it")
+            item_name = ui_copy[1]
+            if item_name in curr_room.items:
+                # add item to player inventory
+                p.inventory.append(item_name)
+                print(f"{item_name} is now in your inventory")
+                # remove item from room
+                curr_room.items.remove(item_name)
             else:
-                print(f"{ui_copy[1]} doesn't exist in the room")
+                print(f"{item_name} doesn't exist in the room")
         # If the length is 1 and the user input is in valid_inputs proceed onwards
         elif len(ui_copy) == 1 and user_input in valid_inputs:
             # If the user moves North and the room exists
@@ -101,6 +105,7 @@ def main():
                 print(curr_room)
 
             elif user_input == 'q':
+                print("Thanks for playing")
                 quit()
         else:
             print("Please move in a valid direction")
