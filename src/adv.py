@@ -33,13 +33,29 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-# Add items to Rooms
-room['outside'].items = [
-    Item("Rock", "Potentially deadly"), Item("Pebble", "Potentially sweet")]
-room['foyer'].items = [Item("Sword", "Poke it with the pointy end"), Item(
-    "Shield", "For when you're in need")]
+# Declare items
+items = {
+    'rock':    Item("Rock", "Potentially deadly"),
 
-print(room['outside'].items)
+    'pebble':    Item("Pebble", "Potentially sweet"),
+
+    'sword':    Item("Sword", "Poke it with the pointy end"),
+
+    'shield':    Item(
+        "Shield", "A good dinner plate")
+}
+
+# For convenience sakes
+# creates a variable with the same name as an item and makes sure the name is all lowercase
+rock = items['rock'].name.lower()
+pebble = items['pebble'].name.lower()
+sword = items['sword'].name.lower()
+shield = items['shield'].name.lower()
+
+# Add items to Rooms
+room['outside'].items = [rock, pebble]
+room['foyer'].items = [sword, shield]
+
 #
 # Main
 #
@@ -47,39 +63,47 @@ print(room['outside'].items)
 
 def main():
     # Establish re-usable variables
-    n = 'n'
-    s = 's'
-    e = 'e'
-    w = 'w'
-    q = 'q'
+    valid_inputs = ['n', 's', 'e', 'w', 'q']
     flag = True
     start_room = room['outside']
     curr_room = start_room
     while flag:
         user_input = input(
-            'Type a direction:\nn, s, e, w\nor press q quit\n')
+            'Type a direction:\nn, s, e, w\nOr try taking an item using the following format:\ntake item_name_here\nPress q quit\n')
+        # split and create copy of the user_input after making it all lowercase
+        ui_copy = user_input.lower().split()
+        # # If length is greater than two, print help message
+        if len(ui_copy) > 2:
+            print("Please only enter one or two words")
+        # If the length is 2 and the first string in the dictionary is "take", loop through the items in the room
+        elif len(ui_copy) == 2 and ui_copy[0] == "take":
+            if ui_copy[1] in curr_room.items:
+                print("you got it")
+            else:
+                print(f"{ui_copy[1]} doesn't exist in the room")
+        # If the length is 1 and the user input is in valid_inputs proceed onwards
+        elif len(ui_copy) == 1 and user_input in valid_inputs:
+            # If the user moves North and the room exists
+            if user_input == 'n' and curr_room.n_to is not None:
+                curr_room = curr_room.n_to
+                print(curr_room)
+            # Same Idea As Above Except South
+            elif user_input == 's' and curr_room.s_to is not None:
+                curr_room = curr_room.s_to
+                print(curr_room)
+            # Now East
+            elif user_input == 'e' and curr_room.e_to is not None:
+                curr_room = curr_room.e_to
+                print(curr_room)
+            # And West
+            elif user_input == 'w' and curr_room.w_to is not None:
+                curr_room = curr_room.w_to
+                print(curr_room)
 
-        if user_input == n and curr_room.n_to is not None:
-            curr_room = curr_room.n_to
-            print(curr_room)
-
-        elif user_input == s and curr_room.s_to is not None:
-            curr_room = curr_room.s_to
-            print(curr_room)
-
-        elif user_input == e and curr_room.e_to is not None:
-            curr_room = curr_room.e_to
-            print(curr_room)
-
-        elif user_input == w and curr_room.w_to is not None:
-            curr_room = curr_room.w_to
-            print(curr_room)
-
-        elif user_input == q:
-            quit()
-
+            elif user_input == 'q':
+                quit()
         else:
-            print("Move in a valid direction")
+            print("Please move in a valid direction")
 
 
 if __name__ == "__main__":
