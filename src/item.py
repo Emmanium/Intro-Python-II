@@ -3,5 +3,5 @@ class Item:
         self.name = name
         self.description = description
 
-    def __str__(self):
+    def __repr__(self):
         return (f'Item Name: {self.name}\nDescription: {self.description}')

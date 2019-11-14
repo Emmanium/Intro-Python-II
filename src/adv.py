@@ -1,5 +1,5 @@
 from room import Room
-
+from item import Item
 # Declare all the rooms
 
 room = {
@@ -33,6 +33,13 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+# Add items to Rooms
+room['outside'].items = [
+    Item("Rock", "Potentially deadly"), Item("Pebble", "Potentially sweet")]
+room['foyer'].items = [Item("Sword", "Poke it with the pointy end"), Item(
+    "Shield", "For when you're in need")]
+
+print(room['outside'].items)
 #
 # Main
 #
