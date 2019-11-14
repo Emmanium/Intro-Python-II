@@ -36,22 +36,26 @@ room['treasure'].s_to = room['narrow']
 
 # Declare items
 # Creates a variable with the same name as an item and makes sure the name is stored in all lowercase
-rock = Item("Rock", "Potentially deadly").name.lower()
-pebble = Item("Pebble", "Potentially sweet").name.lower()
-sword = Item("Sword", "Poke it with the pointy end").name.lower()
+rock = Item("Rock", "Potentially deadly")
+pebble = Item("Pebble", "Potentially sweet")
+sword = Item("Sword", "Poke it with the pointy end")
 shield = Item(
-    "Shield", "A good dinner plate").name.lower()
-# For convenience sakes
-# And now lists are created to add to each room
+    "Shield", "A good dinner plate")
+
+# New variables are created to add to each room
 # This is because appending one by one sucks
 outside_items = [rock, pebble]
 foyer_items = [sword, shield]
 overlook_items = []
 narrow_items = []
 treasure_items = []
-# Add items to Rooms
-room['outside'].items.extend(outside_items)
-room['foyer'].items.extend(foyer_items)
+
+# Populate rooms with items
+room['outside'].items = outside_items
+room['foyer'].items = foyer_items
+
+print(f"room outside: {room['outside'].items}")
+print(f"foyer items: {room['foyer'].items}")
 
 #
 # Main
@@ -76,15 +80,18 @@ def main():
             print("Please only enter one or two words")
         # If the length is 2 and the first string in the dictionary is "take", loop through the items in the room
         elif len(ui_copy) == 2 and ui_copy[0] == "take":
+            # assign variable to user inputted item
             item_name = ui_copy[1]
-            if item_name in curr_room.items:
-                # add item to player inventory
-                p.inventory.append(item_name)
-                print(f"{item_name} is now in your inventory")
-                # remove item from room
-                curr_room.items.remove(item_name)
-            else:
-                print(f"{item_name} doesn't exist in the room")
+            for i in curr_room.items:
+                # if the name of the item matches the user inputted item
+                if i.name.lower() == item_name:
+                    # add item to player inventory
+                    p.inventory.append(i)
+                    i.on_take()
+                    # remove item from room
+                    curr_room.items.remove(i)
+                else:
+                    print(f"{item_name} doesn't exist in the room")
         # If the length is 1 and the user input is in valid_inputs proceed onwards
         elif len(ui_copy) == 1 and user_input in valid_inputs:
             # If the user moves North and the room exists
