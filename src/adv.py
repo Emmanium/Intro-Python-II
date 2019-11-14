@@ -54,9 +54,6 @@ treasure_items = []
 room['outside'].items = outside_items
 room['foyer'].items = foyer_items
 
-print(f"room outside: {room['outside'].items}")
-print(f"foyer items: {room['foyer'].items}")
-
 #
 # Main
 #
@@ -64,15 +61,19 @@ print(f"foyer items: {room['foyer'].items}")
 
 def main():
     # Establish re-usable variables
-    valid_inputs = ['n', 's', 'e', 'w', 'q']
+    valid_inputs = ['n', 's', 'e', 'w', 'i', 'inventory', 'q']
     start_room = room['outside']
     curr_room = start_room
     name = input("Enter your name:\n")
     p = Player(name, curr_room)
 
+    # Welcome Messages
+    print(f"Welcome {name}")
+    print('Type a direction:\nn, s, e, w\nOr try taking an item using the following format:\ntake item_name_here\nPress i or type inventory to check your items\nPress q to quit\n')
+
+    # The REPL Command Parser
     while True:
-        user_input = input(
-            'Type a direction:\nn, s, e, w\nOr try taking an item using the following format:\ntake item_name_here\nPress q to quit\n')
+        user_input = input()
         # split and create copy of the user_input after making it all lowercase
         ui_copy = user_input.lower().split()
         # # If length is greater than two, print help message
@@ -87,11 +88,27 @@ def main():
                 if i.name.lower() == item_name:
                     # add item to player inventory
                     p.inventory.append(i)
+                    # trigger item pick up message
                     i.on_take()
                     # remove item from room
                     curr_room.items.remove(i)
+                    break
                 else:
                     print(f"{item_name} doesn't exist in the room")
+        elif len(ui_copy) == 2 and ui_copy[0] == "drop":
+            # assign variable to user inputted item
+            item_name = ui_copy[1]
+            # loop through player inventory
+            for i in p.inventory:
+                # check to see if the item is in their inventory
+                if i.name.lower() == item_name:
+                    # add item to room
+                    curr_room.items.append(i)
+                    # remove item from player inventory
+                    p.inventory.remove(i)
+                    # trigger item drop message
+                    i.on_drop()
+
         # If the length is 1 and the user input is in valid_inputs proceed onwards
         elif len(ui_copy) == 1 and user_input in valid_inputs:
             # If the user moves North and the room exists
@@ -110,7 +127,13 @@ def main():
             elif user_input == 'w' and curr_room.w_to is not None:
                 curr_room = curr_room.w_to
                 print(curr_room)
-
+            # print inventory
+            elif user_input == 'i':
+                print(p.inventory)
+            # print inventory
+            elif user_input == 'inventory':
+                print(p.inventory)
+            # quits the game
             elif user_input == 'q':
                 print("Thanks for playing")
                 quit()
